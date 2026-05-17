@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('支給履歴')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="main-content">
+    <div class="container">
+
+        <div class="page-header">
+            <h1 class="page-title">支給履歴</h1>
+            <a th:href="@{/approvals}" class="btn btn-secondary">申請一覧へ</a>
+        </div>
+
+        <!-- 履歴がない場合 -->
+        <div th:if="${#lists.isEmpty(approvedRequests)}" class="empty-state">
+            <p>まだ支給履歴がありません。</p>
+        </div>
+
+        <!-- 履歴一覧 -->
+        <div th:if="${!#lists.isEmpty(approvedRequests)}" class="approval-table-wrapper">
+            <table class="approval-table">
+                <thead>
+                    <tr>
+                        <th>承認日時</th>
+                        <th>申請日</th>
+                        <th>金額</th>
+                        <th>申請者ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="req : ${approvedRequests}">
+                        <td th:text="${#temporals.format(req.approvedAt, 'yyyy年M月d日 HH:mm')}"></td>
+                        <td th:text="${#temporals.format(req.requestDate, 'yyyy年M月d日')}"></td>
+                        <td class="amount-cell">
+                            <span class="amount-text" th:text="${req.totalAmount + '円'}"></span>
+                        </td>
+                        <td th:text="${childNames[req.childUserId]}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

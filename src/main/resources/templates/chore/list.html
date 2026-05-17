@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('お手伝い一覧')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="main-content">
+    <div class="container">
+
+        <!-- 登録完了アニメーション -->
+        <div th:if="${param.registered}" class="registered-banner" id="registeredBanner">
+            <span class="registered-icon">⭐</span>
+            今日もお手伝いありがとう！
+            <span class="registered-icon">⭐</span>
+        </div>
+
+        <!-- 申請完了バナー -->
+        <div th:if="${param.applied}" class="applied-banner" id="appliedBanner">
+            <span class="registered-icon">🎉</span>
+            お小遣いを申請しました！
+            <span class="registered-icon">🎉</span>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <div class="page-header">
+            <h1 class="page-title">お手伝い一覧</h1>
+            <div class="page-header-actions">
+                <a th:if="${hasUnpaid}" th:href="@{/requests/new}" class="btn btn-secondary">お小遣いを申請する</a>
+                <a th:href="@{/chores/new}" class="btn btn-primary">+ 登録する</a>
+            </div>
+        </div>
+
+        <!-- お手伝いがない場合 -->
+        <div th:if="${#lists.isEmpty(chores)}" class="empty-state">
+            <p>まだお手伝いが登録されていません。</p>
+            <p>「登録する」ボタンからお手伝いを記録しましょう！</p>
+        </div>
+
+        <!-- お手伝い一覧 -->
+        <div th:if="${!#lists.isEmpty(chores)}" class="chore-table-wrapper">
+            <table class="chore-table">
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>内容</th>
+                        <th>状態</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="chore : ${chores}">
+                        <td class="chore-date" th:text="${#temporals.format(chore.choreDate, 'M月d日')}"></td>
+                        <td class="chore-content" th:text="${chore.content}"></td>
+                        <td>
+                            <span class="status-badge"
+                                  th:classappend="'status-' + ${#strings.toLowerCase(chore.status.name())}"
+                                  th:switch="${chore.status.name()}">
+                                <span th:case="'UNPAID'">未申請</span>
+                                <span th:case="'PENDING'">申請中</span>
+                                <span th:case="'APPROVED'">承認済み</span>
+                                <span th:case="'REJECTED'">却下</span>
+                            </span>
+                        </td>
+                        <td>
+                            <form th:if="${chore.status.name() == 'UNPAID'}"
+                                  th:action="@{/chores/{id}/delete(id=${chore.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('このお手伝いを削除しますか？')">
+                                <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+<script th:if="${param.registered}">
+    const banner = document.getElementById('registeredBanner');
+    if (banner) {
+        setTimeout(() => {
+            banner.style.animation = 'fadeOut 0.5s ease forwards';
+            setTimeout(() => banner.remove(), 500);
+        }, 3000);
+    }
+</script>
+<script th:if="${param.applied}">
+    const appliedBanner = document.getElementById('appliedBanner');
+    if (appliedBanner) {
+        setTimeout(() => {
+            appliedBanner.style.animation = 'fadeOut 0.5s ease forwards';
+            setTimeout(() => appliedBanner.remove(), 500);
+        }, 3000);
+    }
+</script>
+
+</body>
+</html>

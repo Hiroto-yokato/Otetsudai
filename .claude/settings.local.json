@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(steering)",
+      "PowerShell(mvn test *)",
+      "PowerShell(mvn compile *)",
+      "Bash(mvn test *)",
+      "PowerShell(& \"C:\\\\tools\\\\apache-maven-3.9.14\\\\bin\\\\mvn.cmd\" test -f \"C:\\\\Claude\\\\otetsudai\\\\pom.xml\" 2>&1 | Select-Object -Last 20)"
+    ]
+  }
+}

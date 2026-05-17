@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('お手伝い登録')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="main-content">
+    <div class="container">
+
+        <div class="page-header">
+            <h1 class="page-title">お手伝いを登録する</h1>
+        </div>
+
+        <div class="form-card">
+            <form th:action="@{/chores}" method="post" th:object="${choreForm}">
+
+                <div class="form-group">
+                    <label for="choreDate">日付</label>
+                    <input type="date"
+                           id="choreDate"
+                           th:field="*{choreDate}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('choreDate')} ? 'is-invalid'">
+                    <div th:if="${#fields.hasErrors('choreDate')}" class="field-error">
+                        <span th:errors="*{choreDate}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">お手伝いの内容</label>
+                    <textarea id="content"
+                              th:field="*{content}"
+                              class="form-control"
+                              th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'"
+                              rows="3"
+                              placeholder="例：お皿洗い、洗濯物たたみ、お風呂掃除"></textarea>
+                    <div th:if="${#fields.hasErrors('content')}" class="field-error">
+                        <span th:errors="*{content}"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">登録する</button>
+                    <a th:href="@{/chores}" class="btn btn-secondary">キャンセル</a>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

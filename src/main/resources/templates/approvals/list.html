@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('お小遣い申請一覧')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="main-content">
+    <div class="container">
+
+        <!-- 承認完了バナー -->
+        <div th:if="${approvedMessage}" class="approval-success-banner">
+            <span>✓</span>
+            <span th:text="${approvedMessage}"></span>
+        </div>
+
+        <!-- 却下完了バナー -->
+        <div th:if="${rejectedMessage}" class="approval-reject-banner">
+            <span th:text="${rejectedMessage}"></span>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <div class="page-header">
+            <h1 class="page-title">お小遣い申請一覧</h1>
+            <a th:href="@{/history}" class="btn btn-secondary">支給履歴</a>
+        </div>
+
+        <!-- 申請がない場合 -->
+        <div th:if="${#lists.isEmpty(pendingRequests)}" class="empty-state">
+            <p>現在、申請中のお小遣いはありません。</p>
+        </div>
+
+        <!-- 申請一覧 -->
+        <div th:if="${!#lists.isEmpty(pendingRequests)}" class="approval-table-wrapper">
+            <table class="approval-table">
+                <thead>
+                    <tr>
+                        <th>申請日</th>
+                        <th>金額</th>
+                        <th>申請者</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="req : ${pendingRequests}">
+                        <td th:text="${#temporals.format(req.requestDate, 'yyyy年M月d日')}"></td>
+                        <td class="amount-cell">
+                            <span class="amount-text" th:text="${req.totalAmount + '円'}"></span>
+                        </td>
+                        <td th:text="${childNames[req.childUserId]}"></td>
+                        <td>
+                            <a th:href="@{/approvals/{id}(id=${req.id})}" class="btn btn-primary btn-sm">詳細を見る</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - お手伝いポイント管理'">お手伝いポイント管理</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<nav th:fragment="nav">
+    <div class="nav-container">
+        <span class="app-title">お手伝いポイント管理</span>
+        <div class="nav-actions" sec:authorize="isAuthenticated()">
+            <span sec:authentication="name"></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-link">ログアウト</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

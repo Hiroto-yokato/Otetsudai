@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('お小遣いを申請する')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="main-content">
+    <div class="container">
+
+        <div class="page-header">
+            <h1 class="page-title">お小遣いを申請する</h1>
+            <a th:href="@{/chores}" class="btn btn-secondary">戻る</a>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <!-- UNPAID がない場合 -->
+        <div th:if="${!hasUnpaid}" class="empty-state">
+            <p>申請できるお手伝いがありません。</p>
+            <p>まずお手伝いを記録してみましょう！</p>
+            <a th:href="@{/chores/new}" class="btn btn-primary">お手伝いを登録する</a>
+        </div>
+
+        <!-- 申請フォーム -->
+        <div th:if="${hasUnpaid}">
+            <div class="form-card">
+                <form id="requestForm" th:action="@{/requests}" method="post">
+
+                    <div class="request-chore-list">
+                        <p class="request-hint">申請するお手伝いにチェックを入れてください</p>
+                        <div th:each="chore : ${unpaidChores}" class="request-chore-item">
+                            <label class="chore-checkbox-label">
+                                <input type="checkbox"
+                                       name="choreIds"
+                                       th:value="${chore.id}"
+                                       class="chore-checkbox"
+                                       checked>
+                                <span class="chore-checkbox-date" th:text="${#temporals.format(chore.choreDate, 'M月d日')}"></span>
+                                <span class="chore-checkbox-content" th:text="${chore.content}"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="amount-preview">
+                        <span class="amount-label">申請金額</span>
+                        <span class="amount-value"><span id="previewAmount">0</span>円</span>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">申請する</button>
+                        <a th:href="@{/chores}" class="btn btn-secondary">キャンセル</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script th:if="${hasUnpaid}">
+    const checkboxes = document.querySelectorAll('.chore-checkbox');
+    const previewEl = document.getElementById('previewAmount');
+
+    const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+
+    async function updatePreview() {
+        const selected = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        if (selected.length === 0) {
+            previewEl.textContent = '0';
+            return;
+        }
+
+        const params = new URLSearchParams();
+        selected.forEach(id => params.append('choreIds', id));
+        if (csrfToken) params.append('_csrf', csrfToken);
+
+        try {
+            const res = await fetch('/requests/preview', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            });
+            const data = await res.json();
+            previewEl.textContent = data.amount;
+        } catch (e) {
+            // keep current value on error
+        }
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', updatePreview));
+
+    // initial preview on load
+    updatePreview();
+</script>
+
+</body>
+</html>

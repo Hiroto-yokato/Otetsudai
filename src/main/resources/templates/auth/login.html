@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('ログイン')}"></head>
+<body class="login-page">
+
+<div class="login-container">
+    <div class="login-card">
+        <h1 class="login-title">🏠 お手伝いポイント管理</h1>
+        <p class="login-subtitle">ログインしてください</p>
+
+        <!-- エラーメッセージ -->
+        <div th:if="${param.error}" class="alert alert-error">
+            ユーザーIDまたはパスワードが違います
+        </div>
+
+        <!-- ログアウト完了メッセージ -->
+        <div th:if="${param.logout}" class="alert alert-info">
+            ログアウトしました
+        </div>
+
+        <!-- 登録完了メッセージ -->
+        <div th:if="${param.registered}" class="alert alert-success">
+            アカウントを作成しました。ログインしてください。
+        </div>
+
+        <form th:action="@{/login}" method="post" class="login-form">
+            <div class="form-group">
+                <label for="username">ユーザーID またはメールアドレス</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       class="form-control"
+                       placeholder="ユーザーIDまたはメールアドレス"
+                       autocomplete="username"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="パスワード"
+                       autocomplete="current-password"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">ログイン</button>
+        </form>
+
+        <div class="register-link">
+            <a th:href="@{/register}">アカウントをお持ちでない方はこちら</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

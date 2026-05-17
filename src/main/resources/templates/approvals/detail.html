@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('申請詳細')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="main-content">
+    <div class="container">
+
+        <div class="page-header">
+            <h1 class="page-title">申請詳細</h1>
+            <a th:href="@{/approvals}" class="btn btn-secondary">一覧に戻る</a>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <!-- 申請情報 -->
+        <div class="approval-detail-card">
+            <dl class="detail-list">
+                <dt>申請日</dt>
+                <dd th:text="${#temporals.format(request.requestDate, 'yyyy年M月d日')}"></dd>
+                <dt>申請金額</dt>
+                <dd class="detail-amount" th:text="${request.totalAmount + '円'}"></dd>
+                <dt>申請者</dt>
+                <dd th:text="${childName}"></dd>
+            </dl>
+        </div>
+
+        <!-- お手伝い明細 -->
+        <h2 class="section-title">お手伝い明細</h2>
+        <div class="approval-table-wrapper">
+            <table class="approval-table">
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="chore : ${chores}">
+                        <td th:text="${#temporals.format(chore.choreDate, 'M月d日')}"></td>
+                        <td th:text="${chore.content}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 承認・却下フォーム -->
+        <div class="approval-actions">
+            <!-- 承認 -->
+            <form th:action="@{/approvals/{id}/approve(id=${request.id})}" method="post" class="approve-form"
+                  onsubmit="return confirm('この申請を承認しますか？')">
+                <button type="submit" class="btn btn-approve">承認する</button>
+            </form>
+
+            <!-- 却下 -->
+            <div class="rejection-form">
+                <form th:action="@{/approvals/{id}/reject(id=${request.id})}" method="post">
+                    <div class="form-group">
+                        <label for="reason">却下理由（任意）</label>
+                        <textarea id="reason" name="reason" class="form-control" rows="3"
+                                  placeholder="却下の理由を入力してください（省略可）"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-reject"
+                            onclick="return confirm('この申請を却下しますか？')">却下する</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>
