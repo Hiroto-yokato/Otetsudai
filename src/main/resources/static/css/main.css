@@ -137,6 +137,18 @@ body {
     text-decoration: underline;
 }
 
+.nav-link {
+    color: white;
+    font-size: 0.875rem;
+    text-decoration: none;
+    opacity: 0.9;
+}
+
+.nav-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
 /* ===== アラート ===== */
 .alert {
     padding: 0.75rem 1rem;
@@ -313,6 +325,33 @@ body {
     border-radius: 8px;
     padding: 1.5rem;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ===== 一括登録テーブル ===== */
+.bulk-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.bulk-table th {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #666);
+    border-bottom: 2px solid var(--border-color, #e5e7eb);
+}
+
+.bulk-table td {
+    padding: 0.375rem 0.5rem;
+}
+
+.bulk-table .col-date {
+    width: 160px;
+}
+
+.bulk-actions {
+    margin-bottom: 1rem;
 }
 
 .form-actions {

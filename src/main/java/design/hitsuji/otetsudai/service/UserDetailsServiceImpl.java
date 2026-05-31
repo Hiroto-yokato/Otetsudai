@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Spring Security に登録するユーザー詳細サービスの実装。
+ *
+ * <p>ログインIDはユーザーIDのみを受け付ける。
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -19,9 +24,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * ユーザーIDでユーザーを検索し、Spring Security の {@link UserDetails} を返す。
+     *
+     * @param loginId ログインフォームに入力されたユーザーID
+     * @throws UsernameNotFoundException ユーザーが見つからない場合
+     */
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        User user = userRepository.findByUserIdOrEmail(loginId, loginId)
+        User user = userRepository.findByUserId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりません"));
 
         String roleAuthority = "ROLE_" + user.getRole().name();

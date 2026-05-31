@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('お手伝いまとめて登録')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="main-content">
+    <div class="container">
+
+        <div class="page-header">
+            <h1 class="page-title">お手伝いをまとめて登録する</h1>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <div class="form-card">
+            <form th:action="@{/chores/bulk}" method="post" th:object="${bulkForm}" id="bulkForm">
+
+                <table class="bulk-table">
+                    <thead>
+                        <tr>
+                            <th class="col-date">日付</th>
+                            <th class="col-content">お手伝いの内容</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entryRows">
+                        <tr th:each="entry, iter : *{entries}">
+                            <td>
+                                <input type="date"
+                                       th:name="'entries[' + ${iter.index} + '].choreDate'"
+                                       th:value="${entry.choreDate}"
+                                       class="form-control">
+                            </td>
+                            <td>
+                                <input type="text"
+                                       th:name="'entries[' + ${iter.index} + '].content'"
+                                       th:value="${entry.content}"
+                                       list="choreTemplates"
+                                       class="form-control"
+                                       placeholder="選択または自由入力">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <datalist id="choreTemplates">
+                    <option th:each="t : ${choreTemplates}" th:value="${t}"></option>
+                </datalist>
+
+                <div class="bulk-actions">
+                    <button type="button" class="btn btn-secondary" id="addRow">+ 行を追加</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">まとめて登録する</button>
+                    <a th:href="@{/chores}" class="btn btn-secondary">キャンセル</a>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</main>
+
+<script th:inline="javascript">
+    const today = /*[[${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}]]*/ '';
+    let rowCount = /*[[${bulkForm.entries.size()}]]*/ 5;
+
+    document.getElementById('addRow').addEventListener('click', function () {
+        const tbody = document.getElementById('entryRows');
+        const row = document.createElement('tr');
+        row.innerHTML =
+            '<td><input type="date" name="entries[' + rowCount + '].choreDate" value="' + today + '" class="form-control"></td>' +
+            '<td><input type="text" name="entries[' + rowCount + '].content" list="choreTemplates" placeholder="選択または自由入力" class="form-control"></td>';
+        tbody.appendChild(row);
+        rowCount++;
+    });
+</script>
+
+</body>
+</html>

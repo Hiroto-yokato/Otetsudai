@@ -5,6 +5,13 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * お小遣い申請を表すエンティティ（テーブル名: {@code allowance_requests}）。
+ *
+ * <p>1件の申請は複数のお手伝い（{@link Chore}）を束ねる。
+ * {@code totalAmount} は申請時点の計算結果を永続化した値で、
+ * 承認後にお手伝いが変更されても影響を受けない。
+ */
 @Entity
 @Table(name = "allowance_requests")
 public class AllowanceRequest {
@@ -13,12 +20,14 @@ public class AllowanceRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** 申請を行った子どものユーザーID（{@code users.id} への参照）。 */
     @Column(name = "child_user_id", nullable = false)
     private Long childUserId;
 
     @Column(name = "request_date", nullable = false)
     private LocalDate requestDate;
 
+    /** 申請金額（円）。お手伝い件数・日付に基づく計算結果を保存する。 */
     @Column(name = "total_amount", nullable = false)
     private Integer totalAmount;
 
@@ -26,9 +35,11 @@ public class AllowanceRequest {
     @Column(nullable = false)
     private RequestStatus status;
 
+    /** 却下理由。{@code status = REJECTED} のときのみ設定される。 */
     @Column(name = "rejection_reason")
     private String rejectionReason;
 
+    /** 承認日時。{@code status = APPROVED} のときのみ設定される。 */
     @Column(name = "approved_at")
     private LocalDateTime approvedAt;
 

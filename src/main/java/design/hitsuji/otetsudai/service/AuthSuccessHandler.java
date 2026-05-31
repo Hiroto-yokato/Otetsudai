@@ -8,6 +8,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * ログイン成功後のリダイレクト先をロールに応じて振り分けるハンドラー。
+ *
+ * <ul>
+ *   <li>PARENT → {@code /approvals}（申請一覧）</li>
+ *   <li>CHILD  → {@code /chores}（お手伝い一覧）</li>
+ *   <li>その他 → {@code /login?error}</li>
+ * </ul>
+ */
 @Component
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 

@@ -37,6 +37,9 @@ class AllowanceServiceApprovalTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private NotificationService notificationService;
+
     @InjectMocks
     private AllowanceService allowanceService;
 

@@ -5,7 +5,16 @@
       "PowerShell(mvn test *)",
       "PowerShell(mvn compile *)",
       "Bash(mvn test *)",
-      "PowerShell(& \"C:\\\\tools\\\\apache-maven-3.9.14\\\\bin\\\\mvn.cmd\" test -f \"C:\\\\Claude\\\\otetsudai\\\\pom.xml\" 2>&1 | Select-Object -Last 20)"
+      "PowerShell(& \"C:\\\\tools\\\\apache-maven-3.9.14\\\\bin\\\\mvn.cmd\" test -f \"C:\\\\Claude\\\\otetsudai\\\\pom.xml\" 2>&1 | Select-Object -Last 20)",
+      "Bash(\"C:\\\\tools\\\\apache-maven-3.9.14\\\\bin\\\\mvn.cmd\" test *)",
+      "Bash(\"C:\\\\tools\\\\apache-maven-3.9.14\\\\bin\\\\mvn.cmd\" compile *)",
+      "Bash(./mvnw test *)",
+      "Bash(ls *.bat)",
+      "Bash(ls *.cmd)",
+      "Bash(ls mvnw*)",
+      "Bash(which mvn *)",
+      "Bash(ls /usr/local/bin/mvn)",
+      "PowerShell(Test-Path *)"
     ]
   }
 }

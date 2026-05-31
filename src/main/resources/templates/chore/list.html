@@ -29,6 +29,7 @@
             <h1 class="page-title">お手伝い一覧</h1>
             <div class="page-header-actions">
                 <a th:if="${hasUnpaid}" th:href="@{/requests/new}" class="btn btn-secondary">お小遣いを申請する</a>
+                <a th:href="@{/chores/bulk}" class="btn btn-secondary">まとめて登録する</a>
                 <a th:href="@{/chores/new}" class="btn btn-primary">+ 登録する</a>
             </div>
         </div>
@@ -64,13 +65,17 @@
                                 <span th:case="'REJECTED'">却下</span>
                             </span>
                         </td>
-                        <td>
-                            <form th:if="${chore.status.name() == 'UNPAID'}"
-                                  th:action="@{/chores/{id}/delete(id=${chore.id})}"
-                                  method="post"
-                                  onsubmit="return confirm('このお手伝いを削除しますか？')">
-                                <button type="submit" class="btn btn-danger btn-sm">削除</button>
-                            </form>
+                        <td class="chore-actions">
+                            <th:block th:if="${chore.status.name() == 'UNPAID'}">
+                                <a th:href="@{/chores/{id}/edit(id=${chore.id})}"
+                                   class="btn btn-secondary btn-sm">編集</a>
+                                <form th:action="@{/chores/{id}/delete(id=${chore.id})}"
+                                      method="post"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('このお手伝いを削除しますか？')">
+                                    <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                                </form>
+                            </th:block>
                         </td>
                     </tr>
                 </tbody>

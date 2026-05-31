@@ -13,6 +13,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * お小遣い申請を担うコントローラー（{@code /requests}）。
+ *
+ * <p>{@code POST /requests/preview} はチェックボックス選択時の金額プレビューを
+ * JSON で返す AJAX エンドポイントであり、ページ遷移を伴わない。
+ */
 @Controller
 @RequestMapping("/requests")
 public class RequestController {
@@ -25,6 +31,7 @@ public class RequestController {
         this.allowanceService = allowanceService;
     }
 
+    /** お小遣い申請フォームを表示する（未申請のお手伝い一覧付き）。 */
     @GetMapping("/new")
     public String newRequest(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         List<Chore> unpaidChores = choreService.listUnpaidChores(userDetails.getUsername());
@@ -33,6 +40,11 @@ public class RequestController {
         return "request/new";
     }
 
+    /**
+     * 選択したお手伝いに基づくお小遣い金額のプレビューを返す（AJAX用）。
+     *
+     * @return {@code {"amount": N}} 形式の JSON
+     */
     @PostMapping("/preview")
     @ResponseBody
     public Map<String, Integer> preview(
@@ -46,6 +58,10 @@ public class RequestController {
         }
     }
 
+    /**
+     * お小遣い申請を確定する。
+     * 成功時は {@code /chores?applied=true} にリダイレクトする。
+     */
     @PostMapping
     public String createRequest(
             @AuthenticationPrincipal UserDetails userDetails,

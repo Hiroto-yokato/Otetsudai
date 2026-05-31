@@ -8,6 +8,16 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * 開発・デフォルト環境のみ実行される初期データ投入クラス。
+ *
+ * <p>DBにユーザーが1件も存在しない場合に限り、以下のデモ用アカウントを作成する:
+ * <ul>
+ *   <li>親: userId={@code parent} / password={@code parent123}</li>
+ *   <li>子ども: userId={@code child} / password={@code child123}</li>
+ * </ul>
+ * {@code prod} プロファイルでは実行されない。
+ */
 @Component
 @Profile({"dev", "default"})
 public class DataInitializer implements CommandLineRunner {

@@ -13,6 +13,8 @@
     <div class="nav-container">
         <span class="app-title">お手伝いポイント管理</span>
         <div class="nav-actions" sec:authorize="isAuthenticated()">
+            <a th:href="@{/chores/family}" class="nav-link" sec:authorize="hasRole('PARENT')">子どものお手伝い一覧</a>
+            <a th:href="@{/users/new}" class="nav-link" sec:authorize="hasRole('PARENT')">子どもを登録する</a>
             <span sec:authentication="name"></span>
             <form th:action="@{/logout}" method="post" style="display:inline;">
                 <button type="submit" class="btn-link">ログアウト</button>

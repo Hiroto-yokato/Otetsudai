@@ -12,6 +12,11 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+/**
+ * ユーザー管理のビジネスロジックを担うサービス。
+ *
+ * <p>親アカウントの自己登録と、親による子どもアカウント登録の2系統を扱う。
+ */
 @Service
 @Transactional
 public class UserService {
@@ -24,6 +29,15 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * 子どもアカウントを登録する。
+     *
+     * <p>子どもは操作を行った親の {@code familyId} を引き継ぐ。
+     *
+     * @param loginUserId 操作中の親のユーザーID
+     * @param form        子ども登録フォーム
+     * @throws IllegalStateException ユーザーID・メールアドレスの重複、またはパスワード不一致の場合
+     */
     public User registerChild(String loginUserId, UserRegistrationForm form) {
         User parent = findUserByLoginId(loginUserId);
 
@@ -51,6 +65,15 @@ public class UserService {
         return userRepository.save(child);
     }
 
+    /**
+     * 親アカウントを自己登録する。
+     *
+     * <p>親の {@code familyId} は自身の {@code id}（DB採番後）と同値に設定する。
+     * そのため save を2回呼び出す。
+     *
+     * @param form 親登録フォーム（メールアドレス必須）
+     * @throws IllegalStateException ユーザーID・メールアドレスの重複、またはパスワード不一致の場合
+     */
     public User registerParent(ParentRegistrationForm form) {
         if (userRepository.existsByUserId(form.getUserId())) {
             throw new IllegalStateException("このユーザーIDは既に使用されています");
@@ -76,6 +99,12 @@ public class UserService {
         return userRepository.save(saved);
     }
 
+    /**
+     * 指定した親に属する子どもの一覧を返す。
+     *
+     * @param loginUserId 操作中の親のユーザーID
+     * @return 子どものリスト。familyId 未設定の場合は空リスト。
+     */
     @Transactional(readOnly = true)
     public List<User> listChildren(String loginUserId) {
         User parent = findUserByLoginId(loginUserId);

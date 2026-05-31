@@ -5,6 +5,13 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * お手伝いの記録を表すエンティティ（テーブル名: {@code chores}）。
+ *
+ * <p>{@code userId} は {@link User#getId()} への外部キーだが、
+ * JPA の {@code @ManyToOne} ではなく Long で保持する（JOIN不要のため）。
+ * {@code requestId} はお小遣い申請に紐づいた際に設定される。
+ */
 @Entity
 @Table(name = "chores")
 public class Chore {
@@ -13,12 +20,14 @@ public class Chore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** このお手伝いを登録した子どものユーザーID（{@code users.id} への参照）。 */
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Column(name = "chore_date", nullable = false)
     private LocalDate choreDate;
 
+    /** お手伝いの内容。最大100文字。 */
     @Column(nullable = false, length = 100)
     private String content;
 
@@ -26,6 +35,10 @@ public class Chore {
     @Column(nullable = false)
     private ChoreStatus status;
 
+    /**
+     * 紐づくお小遣い申請のID（{@code allowance_requests.id} への参照）。
+     * 申請前は {@code null}、申請後に設定される。
+     */
     @Column(name = "request_id")
     private Long requestId;
 

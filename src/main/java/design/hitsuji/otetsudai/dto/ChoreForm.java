@@ -8,6 +8,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+/**
+ * お手伝い単体登録フォームのDTO。
+ * {@code POST /chores} で {@code @Valid} によるBean Validationが適用される。
+ */
 public class ChoreForm {
 
     @NotNull(message = "日付を入力してください")

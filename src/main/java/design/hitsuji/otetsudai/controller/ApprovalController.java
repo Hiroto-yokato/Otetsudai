@@ -12,6 +12,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 親によるお小遣い申請の承認・却下を担うコントローラー。
+ *
+ * <p>SecurityConfig でこのコントローラーのエンドポイント（{@code /approvals/**}, {@code /history}）は
+ * {@code ROLE_PARENT} のみアクセス可能に設定されている。
+ */
 @Controller
 public class ApprovalController {
 
@@ -21,6 +27,7 @@ public class ApprovalController {
         this.allowanceService = allowanceService;
     }
 
+    /** 承認待ち申請の一覧を表示する。 */
     @GetMapping("/approvals")
     public String list(Model model) {
         List<AllowanceRequest> pendingRequests = allowanceService.listPendingRequests();
@@ -29,6 +36,7 @@ public class ApprovalController {
         return "approvals/list";
     }
 
+    /** 申請の詳細（含まれるお手伝い一覧）を表示する。 */
     @GetMapping("/approvals/{id}")
     public String detail(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
@@ -44,6 +52,10 @@ public class ApprovalController {
         }
     }
 
+    /**
+     * 申請を承認する。
+     * 成功・失敗ともに {@code /approvals} にリダイレクトする。
+     */
     @PostMapping("/approvals/{id}/approve")
     public String approve(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -55,6 +67,10 @@ public class ApprovalController {
         return "redirect:/approvals";
     }
 
+    /**
+     * 申請を却下する。
+     * 成功時は {@code /approvals}、失敗時は詳細画面にリダイレクトする。
+     */
     @PostMapping("/approvals/{id}/reject")
     public String reject(@PathVariable Long id,
                          @RequestParam(required = false) String reason,
@@ -69,6 +85,7 @@ public class ApprovalController {
         }
     }
 
+    /** 承認済みの申請履歴を表示する。 */
     @GetMapping("/history")
     public String history(Model model) {
         List<AllowanceRequest> approvedRequests = allowanceService.listApprovedHistory();
@@ -77,6 +94,10 @@ public class ApprovalController {
         return "approvals/history";
     }
 
+    /**
+     * 申請リストから {@code childUserId → 子どものログインID} のマップを構築する。
+     * 同一ユーザーへの重複クエリを避けるため {@link Map#computeIfAbsent} を使用する。
+     */
     private Map<Long, String> buildChildNameMap(List<AllowanceRequest> requests) {
         Map<Long, String> map = new LinkedHashMap<>();
         for (AllowanceRequest req : requests) {

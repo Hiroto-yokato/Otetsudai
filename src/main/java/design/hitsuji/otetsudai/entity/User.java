@@ -4,6 +4,13 @@ import design.hitsuji.otetsudai.enums.Role;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * ユーザーを表すエンティティ（テーブル名: {@code users}）。
+ *
+ * <p>{@code familyId} によって親と子どもが同一家族として紐づく。
+ * 親ユーザーは自身の {@code id} を {@code familyId} に設定し、
+ * 子どもは登録時に親の {@code familyId} を引き継ぐ。
+ */
 @Entity
 @Table(name = "users")
 public class User {
@@ -12,12 +19,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** ログインに使用する一意のユーザーID（英数字・アンダースコア）。 */
     @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
 
+    /** メールアドレス。親は必須、子どもは任意。通知メールの宛先として使用。 */
     @Column(unique = true)
     private String email;
 
+    /** BCryptでハッシュ化されたパスワード。 */
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
@@ -25,9 +35,14 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    /**
+     * 家族を識別するID。同一家族の親・子どもが同じ値を持つ。
+     * 親の場合は {@code users.id} と同値。
+     */
     @Column(name = "family_id")
     private Long familyId;
 
+    /** 画面上の表示名。未設定の場合は {@code userId} を代わりに使用する。 */
     @Column(name = "display_name", length = 50)
     private String displayName;
 

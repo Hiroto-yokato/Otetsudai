@@ -1,0 +1,25 @@
+[Unit]
+Description=お手伝いポイント管理アプリ
+After=network.target
+
+[Service]
+Type=simple
+User=otetsudai
+Group=otetsudai
+WorkingDirectory=/opt/otetsudai
+ExecStart=/usr/bin/java -jar \
+    -Dspring.profiles.active=prod \
+    /opt/otetsudai/otetsudai.jar
+Restart=on-failure
+RestartSec=10
+
+# ジャーナルにログ出力
+StandardOutput=journal
+StandardError=journal
+
+# セキュリティ強化
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

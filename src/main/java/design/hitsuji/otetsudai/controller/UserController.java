@@ -10,6 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 親による子どもアカウント管理を担うコントローラー（{@code /users}）。
+ *
+ * <p>SecurityConfig で {@code /users/**} は {@code ROLE_PARENT} のみアクセス可能。
+ */
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -20,18 +25,24 @@ public class UserController {
         this.userService = userService;
     }
 
+    /** 家族の子どもアカウント一覧を表示する。 */
     @GetMapping
     public String list(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         model.addAttribute("children", userService.listChildren(userDetails.getUsername()));
         return "users/list";
     }
 
+    /** 子どもアカウント登録フォームを表示する。 */
     @GetMapping("/new")
     public String newForm(Model model) {
         model.addAttribute("form", new UserRegistrationForm());
         return "users/new";
     }
 
+    /**
+     * 子どもアカウントを登録する。
+     * 成功時は {@code /users?registered=true} にリダイレクトする。
+     */
     @PostMapping
     public String register(
             @AuthenticationPrincipal UserDetails userDetails,

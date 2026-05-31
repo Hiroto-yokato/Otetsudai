@@ -51,7 +51,7 @@ enum Role { PARENT, CHILD }
 **制約**:
 - `userId` はシステム全体で一意
 - `email` はnull許容（子どもアカウントは省略可）、設定する場合は一意
-- `userId` と `email` のどちらか一方でログイン可能
+- `userId` のみでログイン可能
 - `passwordHash` はBCryptでハッシュ化
 
 ---
@@ -246,7 +246,7 @@ class AllowanceService {
 }
 
 class AuthService {
-    authenticate(String loginId, String password): User  // userId or email
+    authenticate(String loginId, String password): User  // userId のみ
     loadUserByLoginId(String loginId): UserDetails
 }
 ```
@@ -399,7 +399,7 @@ sequenceDiagram
 
 - `AllowanceService.calculateAmount()` — 境界値（1回/2回/3回/複数日）の計算が正しいか
 - `ChoreService.deleteChore()` — UNPAID以外で例外が投げられるか
-- `AuthService.authenticate()` — userId・email 両方でログインできるか
+- `AuthService.authenticate()` — userId でログインできるか
 
 ### 統合テスト
 

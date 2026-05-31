@@ -23,6 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +37,9 @@ class AllowanceServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private AllowanceService allowanceService;
@@ -127,6 +131,7 @@ class AllowanceServiceTest {
         verify(allowanceRequestRepository).save(argThat(r ->
                 r.getChildUserId().equals(1L) && r.getTotalAmount() == 20
         ));
+        verify(notificationService).notifyParentAllowanceRequested(any(User.class), any(AllowanceRequest.class), anyList());
     }
 
     @Test
